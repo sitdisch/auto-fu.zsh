@@ -1288,18 +1288,30 @@ afu-completer-init-maybe () {
   return ret
 }
 
-autoload +X keymap+widget
-
-() {
-  setopt localoptions extendedglob no_shwordsplit
-  local code=${(S)${functions[keymap+widget]/for w in *
-	do
-/for w in $afu_zles
-  do
-  }/(#b)(\$w-by-keymap \(\) \{*\})/
-  eval \${\${\${\"\$(echo \'$match\')\"}/\\\$w/\$w}//\\\$WIDGET/\$w}
+function afu-keymap+widget () {
+  emulate -L zsh
+  zmodload -i zsh/zleparameter || return 1
+  local -a m
+  local w='' k=''
+  for w in $afu_zles; do
+    if [[ $widgets[$w] != (builtin|user:$w-by-keymap) ]]; then
+      m+="Cannot rebind $w: $widgets[$w]"
+      continue
+    fi
+    eval ${${${"$(echo '$w-by-keymap () {
+                             if (( $+widgets[$KEYMAP+$WIDGET] == 1 ))
+                        then
+                                zle $KEYMAP+$WIDGET "$@"
+                        else
+                                zle .$WIDGET "$@"
+                        fi
+                }')"}/\$w/$w}//\$WIDGET/$w}
+    zle -N $w $w-by-keymap
+  done
+  [[ -n $m ]] && {
+    zle && zle -M "${(F)m}" || print -l -u2 -R $m
   }
-  eval "function afu-keymap+widget () { $code }"
+  return 0
 }
 
 afu-register-zle-afu-raw () {
