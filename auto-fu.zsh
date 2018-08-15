@@ -1414,17 +1414,13 @@ afu-initialize-register-zle-contrib-all () {
   local bname uname; for bname uname in "$@"; do
     if [[ $uname == _zsh_highlight_widget* ]]; then
       case ${${functions[$uname]}#$'\tbuiltin zle '} in
-        (.*)
-          # _zsh_highlight only
-          afu-initialize-register-zle-contrib~ $bname $uname t
-          ;;
         ((#b)(*) '-- "$@" && _zsh_highlight')
           # _zsh_highlight plus custom widget
           afu-initialize-register-zle-contrib~ $bname \
             ${${widgets[${match}]}#user:} nil $uname
           ;;
         (*)
-          echo "auto-fu:zsh-syntax-highlighting code detection failure."
+          afu-initialize-register-zle-contrib~ $bname $uname t
           ;;
       esac
     else
