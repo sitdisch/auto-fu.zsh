@@ -509,7 +509,7 @@ afu-line-init () {
 auto-fu-init () { with-afu-zle-rebinding afu-line-init }; zle -N auto-fu-init
 
 with-afu-trapint () {
-  setopt localtraps
+  setopt localoptions localtraps
   TRAPINT () {
     local signum="$1"; shift
     with-afu-trapint-handling "$signum" intr afu-trap-ignore-int "$@"
