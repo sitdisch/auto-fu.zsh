@@ -415,7 +415,7 @@ afu-install-preexec () {
 auto-fu-preexec () { echo -en '\e[0m' }
 
 afu+vi-ins-mode () { zle -K afu      ; }; zle -N afu+vi-ins-mode
-afu+vi-cmd-mode () { zle -K afu-vicmd; }; zle -N afu+vi-cmd-mode
+afu+vi-cmd-mode () { zle -K afu-vicmd; echo -ne '\e[1 q'; }; zle -N afu+vi-cmd-mode
 
 auto-fu-zle-keymap-select () { afu-track-keymap "$@" afu-adjust-main-keymap }
 
@@ -435,7 +435,8 @@ afu-track-keymap () {
     local -a tmp; tmp=("${(Q)=cur}")
     afu_keymap_state+=(cur "$old $tmp[1]")
     "$fun" "$tmp[1]"
-  }
+	}
+	echo -ne '\e[5 q' # make the cursor thin again after the vi-cmd-mode
 }
 
 afu-track-keymap-skip-p () {
