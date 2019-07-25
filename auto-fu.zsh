@@ -435,8 +435,8 @@ afu-track-keymap () {
     local -a tmp; tmp=("${(Q)=cur}")
     afu_keymap_state+=(cur "$old $tmp[1]")
     "$fun" "$tmp[1]"
-	}
-	echo -ne '\e[5 q' # make the cursor thin again after the vi-cmd-mode
+  }
+  echo -ne '\e[5 q' # make the cursor thin again after the vi-cmd-mode
 }
 
 afu-track-keymap-skip-p () {
